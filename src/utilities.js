@@ -2777,10 +2777,12 @@ export const drawMesh = (predictions, ctx) => {
       }
     else if (Math.abs(response[4])<0.4){
       text= "pas bon"
+      direction="bas"
       //console.log("tu regardes à droite")
     }
     else if (Math.abs(response[4])>0.7){
       text= "pas bon du tout"
+      direction="haut"
       //console.log("tu regardes à droite")
     }
 
