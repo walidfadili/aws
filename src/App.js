@@ -1,23 +1,268 @@
 import logo from './logo.svg';
-import './App.css';
+import React, { useRef, useEffect } from 'react';
+import * as tf from "@tensorflow/tfjs";
+import * as facemesh from "@tensorflow-models/face-landmarks-detection";
+import Webcam from "react-webcam";
+import { addSymbol, drawMesh, patternDetection } from "./utilities";
+import './style.css';
+import { getGradient } from '@tensorflow/tfjs';
+
+
+
+
+
+
+var symbolList=[];
+
+const DATA=[
+  {
+    name : "pattern1",
+    pattern : ["gauche","gauche","gauche","gauche"]
+  },
+  {
+    name : "pattern2",
+    pattern : ["droite","droite","droite","droite"]
+  },
+  {
+    name : "pattern3",
+    pattern : ["gauche","droite","gauche","droite"]
+  },
+  {
+    name : "pattern4",
+    pattern : ["haut","bas","haut","bas"]
+  }
+  
+]
+
+
+
+var myText=null;
+var detection=null;
+var gauche=0;
+var droite=0;
+var haut=0;
+var bas=0;
+var ecran=0;
+
+class Alert extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      text: 'Vous regardez l\'écran',
+      color: 0,
+      seconds: 0 
+    };
+  }
+
+  change() {
+    if (Math.max(gauche,droite,haut,bas,ecran)==gauche){
+      myText="gauche"
+      console.log("gauche",gauche)
+    }
+    else if(Math.max(gauche,droite,haut,bas,ecran)==droite){
+      myText="droite"
+      console.log("droite",droite)
+    }
+    else if(Math.max(gauche,droite,haut,bas,ecran)==haut){
+      myText="haut"
+      console.log("haut",haut)
+    }
+    else if(Math.max(gauche,droite,haut,bas,ecran)==bas){
+      myText="bas"
+      console.log("bas",bas)
+    }
+    else if(Math.max(gauche,droite,haut,bas,ecran)==ecran){
+      myText="écran"
+      console.log("écran",ecran)
+    }
+    addSymbol(symbolList,myText)
+    detection=patternDetection(symbolList,DATA)
+    if (detection != null) {
+      myText=detection
+    }
+    console.log(symbolList)
+
+    if (myText=="écran"){
+      this.setState({
+        color: 0
+      })
+    }
+    else{
+      this.setState({
+        color: 1
+      })
+    }
+    
+    this.setState(state => ({
+      text: myText 
+
+      //seconds: state.seconds + 1
+      
+    }));
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      this.change()
+      gauche=0;
+      droite=0
+      bas=0
+      haut=0
+      ecran=0
+    }, 500);
+    
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  render() {
+    return (
+      
+      
+      <div style={{
+        marginInline: 30,
+        alignItems: 'center'
+      }}>
+        
+        { this.state.color ? <div style={{
+          backgroundColor: 'red',
+          
+          
+        }}> {this.state.text} </div> : <div style={{
+          backgroundColor: 'green'
+        }}> {this.state.text} </div>}
+                
+      </div>
+    );
+  }
+}
+
+
 
 function App() {
+
+  
+  var text=null;
+  //Ref
+  const webcamRef = useRef(null);
+  const canvasRef = useRef(null)
+
+  
+  //  Load Facemesh
+  const runFacemesh = async () => {
+    const net = await facemesh.load(facemesh.SupportedPackages.mediapipeFacemesh);
+    setInterval(() => {
+      detect(net);
+
+    }, 50);
+  };
+
+  const detect = async (net) => {
+    if (
+      typeof webcamRef.current !== "undefined" &&
+      webcamRef.current !== null &&
+      webcamRef.current.video.readyState === 4
+    ) {
+      // Get Video Properties
+      const video = webcamRef.current.video;
+      const videoWidth = webcamRef.current.video.videoWidth;
+      const videoHeight = webcamRef.current.video.videoHeight;
+
+      // Set video width
+      webcamRef.current.video.width = videoWidth;
+      webcamRef.current.video.height = videoHeight;
+
+      // Set canvas width
+      canvasRef.current.width = videoWidth;
+      canvasRef.current.height = videoHeight;
+
+      // Make Detections
+      // NEW MODEL
+      const face = await net.estimateFaces({input:video});
+      //console.log(face);
+
+      // Get canvas context
+      const ctx = canvasRef.current.getContext("2d");
+      requestAnimationFrame(()=>{drawMesh(face, ctx);
+       // myText=drawMesh(face, ctx);
+        
+        
+        console.log(drawMesh(face,ctx))
+        if (drawMesh(face,ctx)=="gauche"){
+          gauche++
+        }
+        else if (drawMesh(face,ctx)=="droite"){
+          droite++
+        }
+        else if (drawMesh(face,ctx)=="haut"){
+          haut++
+        }
+        else if (drawMesh(face,ctx)=="bas"){
+          bas++
+        }
+        else if(drawMesh(face,ctx)=="écran"){
+          ecran++
+        }
+      });
+    }
+  };
+
+  useEffect(()=>{runFacemesh()}, []);
+
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div id="entete">
+        En tête
+      </div>
+
+  <div id="main">
+  <div id="menu" style={{
+   marginBottom: 10
+ }}>
+ <Webcam
+          ref={webcamRef}
+          style={{
+           // position: "absolute",
+            marginLeft: 100,
+            marginTop: 10,
+            /*left: 0,
+            right: 0,
+            textAlign: "center",*/
+            zindex: 9,
+            width: 320,
+            height: 240,
+          }}
+        />
+
+   <canvas
+          ref={canvasRef}
+          style={{
+            width: 0,
+            height: 0,
+          }}
+        />
+    <Alert  id="alert"></Alert> 
+ </div>
+
+ <div id="contenu" style={{
+   textAlign: "center",
+ }}>
+  Contenu de l'examen
+ </div>
+</div>
+
+<div id="footer">
+ Pied de Page
+</div>
+      
+      
+        
+      
+    
     </div>
   );
 }

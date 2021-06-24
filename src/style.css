@@ -1,0 +1,40 @@
+.App{
+    width:100%;
+}
+
+.Alert{
+    margin: 50px;
+    text-align: center;
+}
+#entete, #menu, #contenu, #footer {
+    padding:1px 0;
+    }
+    #entete {
+    /*background-color:#ce8c28;*/
+    text-align:center;
+    border: solid;
+    margin-bottom: 10px;
+    }
+    #main {
+    /*max-width:960px;*/
+    /*margin:auto;*/
+    }
+    #menu {
+        float:right;
+        width:500px;
+        border: solid;
+       /* background-color:#eb4614;*/
+        }
+        #contenu {
+        margin-right:550px;
+        border: solid;
+        
+       /* background-color:#2833ce;*/
+        }
+    #footer {
+   /* background-color:#669933;*/
+    text-align:center;
+    clear:both;
+    border: solid;
+    margin-top: 20px;
+    }
