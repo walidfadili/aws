@@ -216,7 +216,7 @@ function App() {
   return (
     <div className="App">
       <div id="entete">
-        En tête
+        Bonjour
       </div>
 
   <div id="main">
