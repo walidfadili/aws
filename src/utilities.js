@@ -2775,14 +2775,14 @@ export const drawMesh = (predictions, ctx) => {
         text= "vous regardez à droite"
         direction="droite"
       }
-   /* else if (Math.abs(response[4])<0.4){
+    else if (Math.abs(response[4])<0.4){
       text= "pas bon"
       //console.log("tu regardes à droite")
     }
     else if (Math.abs(response[4])>0.7){
       text= "pas bon du tout"
       //console.log("tu regardes à droite")
-    }*/
+    }
 
 
     else {
