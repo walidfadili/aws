@@ -1,6 +1,6 @@
-import logo from './logo.svg';
 import React, { useRef, useEffect } from 'react';
 import * as tf from "@tensorflow/tfjs";
+import axios from 'axios';
 import * as facemesh from "@tensorflow-models/face-landmarks-detection";
 import Webcam from "react-webcam";
 import { addSymbol, drawMesh, patternDetection } from "./utilities";
@@ -14,7 +14,7 @@ import { getGradient } from '@tensorflow/tfjs';
 
 var symbolList=[];
 
-const DATA=[
+/*const DATA=[
   {
     name : "pattern1",
     pattern : ["gauche","gauche","gauche","gauche"]
@@ -32,9 +32,11 @@ const DATA=[
     pattern : ["haut","bas","haut","bas"]
   }
   
-]
-
-
+]*/
+var DATA=[]
+var params=null
+var periodeSymbole=0
+var periodeEch=0
 
 var myText=null;
 var detection=null;
@@ -52,6 +54,28 @@ class Alert extends React.Component {
       color: 0,
       seconds: 0 
     };
+  }
+
+  componentDidMount() {
+    axios.get('https://test-it-project.herokuapp.com/api/robots/api/robots'
+    ).then((response)=>{
+    DATA=response.data[0].patterns
+    console.log(response.data[1])
+    params=response.data[1].params
+    periodeEch=response.data[1].periodeEch
+    periodeSymbole=response.data[1].periodeSymbole
+  
+  })
+    
+    this.interval = setInterval(() => {
+      this.change()
+      gauche=0;
+      droite=0
+      bas=0
+      haut=0
+      ecran=0
+    }, 500);
+    
   }
 
   change() {
@@ -101,17 +125,7 @@ class Alert extends React.Component {
     }));
   }
 
-  componentDidMount() {
-    this.interval = setInterval(() => {
-      this.change()
-      gauche=0;
-      droite=0
-      bas=0
-      haut=0
-      ecran=0
-    }, 500);
-    
-  }
+  
 
   componentWillUnmount() {
     clearInterval(this.interval);
@@ -156,7 +170,7 @@ function App() {
     setInterval(() => {
       detect(net);
 
-    }, 50);
+    }, /*periodeEch*/50);
   };
 
   const detect = async (net) => {
@@ -185,24 +199,24 @@ function App() {
 
       // Get canvas context
       const ctx = canvasRef.current.getContext("2d");
-      requestAnimationFrame(()=>{drawMesh(face, ctx);
+      requestAnimationFrame(()=>{drawMesh(face, ctx, params);
        // myText=drawMesh(face, ctx);
         
         
-        console.log(drawMesh(face,ctx))
-        if (drawMesh(face,ctx)=="gauche"){
+        console.log(drawMesh(face,ctx,params))
+        if (drawMesh(face,ctx,params)=="gauche"){
           gauche++
         }
-        else if (drawMesh(face,ctx)=="droite"){
+        else if (drawMesh(face,ctx,params)=="droite"){
           droite++
         }
-        else if (drawMesh(face,ctx)=="haut"){
+        else if (drawMesh(face,ctx,params)=="haut"){
           haut++
         }
-        else if (drawMesh(face,ctx)=="bas"){
+        else if (drawMesh(face,ctx,params)=="bas"){
           bas++
         }
-        else if(drawMesh(face,ctx)=="écran"){
+        else if(drawMesh(face,ctx,params)=="écran"){
           ecran++
         }
       });
@@ -226,7 +240,7 @@ function App() {
  <Webcam
           ref={webcamRef}
           style={{
-           // position: "absolute",
+            //position: "absolute",
             marginLeft: 100,
             marginTop: 10,
             /*left: 0,
@@ -241,8 +255,17 @@ function App() {
    <canvas
           ref={canvasRef}
           style={{
-            width: 0,
-            height: 0,
+           /* width: 0,
+            height: 0,*/
+            position: "absolute",
+            marginLeft: 100,
+            marginTop: 10,
+            /*left: 0,
+            right: 0,
+            textAlign: "center",*/
+            zindex: 9,
+            width: 320,
+            height: 240,
           }}
         />
     <Alert  id="alert"></Alert> 

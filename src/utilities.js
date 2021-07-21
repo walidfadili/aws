@@ -1,4 +1,5 @@
 //  Triangulation sets of three
+
 export const TRIANGULATION = [
   127,
   34,
@@ -2737,7 +2738,7 @@ const drawPath = (ctx, points, closePath) => {
 
 
 // Drawing Mesh
-export const drawMesh = (predictions, ctx) => {
+export const drawMesh = (predictions, ctx, params) => {
   var direction="écran"; 
   var text="vous regardez l'écran";
   if (predictions.length > 0) {
@@ -2747,40 +2748,40 @@ export const drawMesh = (predictions, ctx) => {
       var response = detectRot(keypoints)
       //console.log(Math.abs(response[4]))
       
-      if(Math.abs(response[0])<0.2){
+      if(Math.abs(response[0])</*0.2*/params.gauche){
       //  console.log("tu regardes à gauche")
         text= "vous regardez à gauche"
         direction="gauche"
       }
-      else if(Math.abs(response[1])<0.2){
+      else if(Math.abs(response[1])</*0.2*/ params.droite){
       //  console.log("tu regardes à droite")
         text= "vous regardez à droite"
         direction="droite"
       }
-      else if(Math.abs(response[2])<0.4){
+      else if(Math.abs(response[2])</*0.4*/ params.haut){
       //console.log("tu regardes en haut")
         text= "vous regardez en haut"
         direction="haut"
       }
-      else if(Math.abs(response[2])>0.6){
+      else if(Math.abs(response[2])>/*0.6*/ params.bas){
       //console.log("tu regardes en bas")
         text="vous regardez en bas"
         direction="bas"
       }
-     else if (Math.abs(response[3])<0.4){
+     else if (Math.abs(response[3])</*0.4*/ params.pupilleGauche){
         text= "vous regardez à gauche"
         direction="gauche"
       }
-      else if (Math.abs(response[3])>0.6){
+      else if (Math.abs(response[3])>/*0.6*/params.pupilleDroite){
         text= "vous regardez à droite"
         direction="droite"
       }
-    else if (Math.abs(response[4])<0.4){
+    else if (Math.abs(response[4])</*0.4*/params.pupilleBas){
       text= "pas bon"
       direction="bas"
       //console.log("tu regardes à droite")
     }
-    else if (Math.abs(response[4])>0.7){
+    else if (Math.abs(response[4])>/*0.7*/params.pupilleHaut){
       text= "pas bon du tout"
       direction="haut"
       //console.log("tu regardes à droite")
@@ -2815,7 +2816,7 @@ export const drawMesh = (predictions, ctx) => {
         ctx.beginPath();
         ctx.arc(x, y, 1 /* radius */, 0, 3 * Math.PI);
         
-        if(i < 478 && i>467){
+        /*if(i < 478 && i>467){
           if ( i==468 ){
             ctx.fillStyle = "blue";
           }
@@ -2826,13 +2827,13 @@ export const drawMesh = (predictions, ctx) => {
             ctx.fillStyle = "red";
           }
         }
-        else if ( i==130 || i== 133 || i== 472 || i==159 || i==145){
+        /*else if ( i==130 || i== 133 || i== 472 || i==159 || i==145){
           ctx.fillStyle = "black";
         }
         else {
           ctx.fillStyle = "aqua";
-        }
-        
+        }*/
+        ctx.fillStyle = "aqua";
         ctx.fill();
       }
     });
