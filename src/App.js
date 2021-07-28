@@ -4,6 +4,7 @@ import axios from 'axios';
 import * as facemesh from "@tensorflow-models/face-landmarks-detection";
 import Webcam from "react-webcam";
 import { addSymbol, drawMesh, patternDetection } from "./utilities";
+import "./Speech"
 import './style.css';
 import { getGradient } from '@tensorflow/tfjs';
 
@@ -14,25 +15,7 @@ import { getGradient } from '@tensorflow/tfjs';
 
 var symbolList=[];
 
-/*const DATA=[
-  {
-    name : "pattern1",
-    pattern : ["gauche","gauche","gauche","gauche"]
-  },
-  {
-    name : "pattern2",
-    pattern : ["droite","droite","droite","droite"]
-  },
-  {
-    name : "pattern3",
-    pattern : ["gauche","droite","gauche","droite"]
-  },
-  {
-    name : "pattern4",
-    pattern : ["haut","bas","haut","bas"]
-  }
-  
-]*/
+
 var DATA=[]
 var params=null
 var periodeSymbole=0
@@ -60,7 +43,7 @@ class Alert extends React.Component {
     axios.get('https://test-it-project.herokuapp.com/api/robots/api/robots'
     ).then((response)=>{
     DATA=response.data[0].patterns
-    console.log(response.data[1])
+    //console.log(response.data[1])
     params=response.data[1].params
     periodeEch=response.data[1].periodeEch
     periodeSymbole=response.data[1].periodeSymbole
@@ -81,30 +64,30 @@ class Alert extends React.Component {
   change() {
     if (Math.max(gauche,droite,haut,bas,ecran)==gauche){
       myText="gauche"
-      console.log("gauche",gauche)
+     // console.log("gauche",gauche)
     }
     else if(Math.max(gauche,droite,haut,bas,ecran)==droite){
       myText="droite"
-      console.log("droite",droite)
+     // console.log("droite",droite)
     }
     else if(Math.max(gauche,droite,haut,bas,ecran)==haut){
       myText="haut"
-      console.log("haut",haut)
+     // console.log("haut",haut)
     }
     else if(Math.max(gauche,droite,haut,bas,ecran)==bas){
       myText="bas"
-      console.log("bas",bas)
+     // console.log("bas",bas)
     }
     else if(Math.max(gauche,droite,haut,bas,ecran)==ecran){
       myText="écran"
-      console.log("écran",ecran)
+     // console.log("écran",ecran)
     }
     addSymbol(symbolList,myText)
     detection=patternDetection(symbolList,DATA)
     if (detection != null) {
       myText=detection
     }
-    console.log(symbolList)
+   // console.log(symbolList)
 
     if (myText=="écran"){
       this.setState({
@@ -203,7 +186,7 @@ function App() {
        // myText=drawMesh(face, ctx);
         
         
-        console.log(drawMesh(face,ctx,params))
+        //console.log(drawMesh(face,ctx,params))
         if (drawMesh(face,ctx,params)=="gauche"){
           gauche++
         }
@@ -230,7 +213,7 @@ function App() {
   return (
     <div className="App">
       <div id="entete">
-        Bonjour Mohammed
+        Bonjour 
       </div>
 
   <div id="main">
