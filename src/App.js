@@ -7,14 +7,13 @@ import { addSymbol, drawMesh, patternDetection } from "./utilities";
 import "./Speech"
 import './style.css';
 import { getGradient } from '@tensorflow/tfjs';
-
-
+import { Synthesis } from './speechSynthesis';
 
 
 
 
 var symbolList=[];
-
+var lastSymbol = null;
 
 var DATA=[]
 var params=null
@@ -85,8 +84,17 @@ class Alert extends React.Component {
     addSymbol(symbolList,myText)
     detection=patternDetection(symbolList,DATA)
     if (detection != null) {
-      myText=detection
+      
+      if (detection != lastSymbol || lastSymbol == null){
+        myText=detection
+        console.log(myText)
+        Synthesis(myText+" detecté")
+        lastSymbol=myText
+      }
+      
+      
     }
+    
    // console.log(symbolList)
 
     if (myText=="écran"){
@@ -101,10 +109,7 @@ class Alert extends React.Component {
     }
     
     this.setState(state => ({
-      text: myText 
-
-      //seconds: state.seconds + 1
-      
+      text: myText       
     }));
   }
 
@@ -183,7 +188,6 @@ function App() {
       // Get canvas context
       const ctx = canvasRef.current.getContext("2d");
       requestAnimationFrame(()=>{drawMesh(face, ctx, params);
-       // myText=drawMesh(face, ctx);
         
         
         //console.log(drawMesh(face,ctx,params))

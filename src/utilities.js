@@ -2816,23 +2816,6 @@ export const drawMesh = (predictions, ctx, params) => {
         ctx.beginPath();
         ctx.arc(x, y, 1 /* radius */, 0, 3 * Math.PI);
         
-        /*if(i < 478 && i>467){
-          if ( i==468 ){
-            ctx.fillStyle = "blue";
-          }
-          else if (i==159 || i==144){
-            ctx.fillStyle = "black";
-          }
-          else {
-            ctx.fillStyle = "red";
-          }
-        }
-        /*else if ( i==130 || i== 133 || i== 472 || i==159 || i==145){
-          ctx.fillStyle = "black";
-        }
-        else {
-          ctx.fillStyle = "aqua";
-        }*/
         ctx.fillStyle = "aqua";
         ctx.fill();
       }
@@ -2857,6 +2840,14 @@ export const addSymbol=(symbolList,symbol)=>{
   }
 }
 
+export const Synthesis = (myText) => {
+
+    let speech = new SpeechSynthesisUtterance();
+
+    speech.text= myText;
+
+    speechSynthesis.speak(speech);
+}
 
 export const patternDetection=(symbolList,DATA)=> {
   if (symbolList.length<4) {
@@ -2864,6 +2855,7 @@ export const patternDetection=(symbolList,DATA)=> {
   }
   for (var i = 0; i < DATA.length; i++) {
     if (JSON.stringify(DATA[i].pattern)==JSON.stringify(symbolList)) {
+      //Synthesis("nous avons detecté un pattern")
       return DATA[i].name
     }
   }
