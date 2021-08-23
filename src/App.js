@@ -28,6 +28,12 @@ var haut=0;
 var bas=0;
 var ecran=0;
 
+var nbrPatternGauche=0;
+var nbrPatternDroite=0;
+var nbrPatternHaut=0;
+var nbrPatternBas=0;
+
+var severite=2;
 class Alert extends React.Component {
   constructor(props) {
     super(props);
@@ -46,6 +52,7 @@ class Alert extends React.Component {
     params=response.data[1].params
     periodeEch=response.data[1].periodeEch
     periodeSymbole=response.data[1].periodeSymbole
+    
   
   })
     
@@ -61,8 +68,8 @@ class Alert extends React.Component {
   }
 
   change() {
-    if (Math.max(gauche,droite,haut,bas,ecran)==gauche){
-      myText="gauche"
+    if (Math.max(gauche,droite,haut,bas,ecran)==ecran){
+      myText="écran"
      // console.log("gauche",gauche)
     }
     else if(Math.max(gauche,droite,haut,bas,ecran)==droite){
@@ -77,24 +84,69 @@ class Alert extends React.Component {
       myText="bas"
      // console.log("bas",bas)
     }
-    else if(Math.max(gauche,droite,haut,bas,ecran)==ecran){
-      myText="écran"
+    else if(Math.max(gauche,droite,haut,bas,ecran)==gauche){
+      myText="gauche"
      // console.log("écran",ecran)
     }
     addSymbol(symbolList,myText)
     detection=patternDetection(symbolList,DATA)
-    if (detection != null) {
-      
-      if (detection != lastSymbol || lastSymbol == null){
-        myText=detection
-        console.log(myText)
-        Synthesis(myText+" detecté")
-        lastSymbol=myText
+
+    if (detection == "pattern bas"){
+      symbolList=[]
+      myText=detection
+      if(nbrPatternBas==severite-1){
+        Synthesis("Nous avons detecté un "+myText)
+        nbrPatternBas=0
+      }
+      else{
+        nbrPatternBas++
       }
       
+    }
+    else if (detection == "pattern haut"){
+      symbolList=[];
+      myText=detection
+      if(nbrPatternHaut==severite-1){  
+        Synthesis("Nous avons detecté un "+myText)
+        nbrPatternHaut=0
+      }
+      else{
+        nbrPatternHaut++
+      }
       
     }
-    
+    else if (detection == "pattern droite"){
+      symbolList=[];
+      myText=detection
+      if(nbrPatternDroite==severite-1){
+
+        Synthesis("Nous avons detecté un "+myText)
+        nbrPatternDroite=0
+      }
+      else{
+        nbrPatternDroite++
+      }
+      
+    }
+    else if (detection == "pattern gauche"){
+      symbolList=[];
+      myText=detection
+      if(nbrPatternGauche==severite-1){
+        Synthesis("Nous avons detecté un "+myText)
+        nbrPatternGauche=0
+      }
+      else{
+        nbrPatternGauche++
+      }
+      
+    }
+
+
+
+
+
+
+
    // console.log(symbolList)
 
     if (myText=="écran"){

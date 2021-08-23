@@ -2840,11 +2840,11 @@ export const addSymbol=(symbolList,symbol)=>{
   }
 }
 
-export const Synthesis = (myText) => {
+export const Synthesis = (textSpeech) => {
 
     let speech = new SpeechSynthesisUtterance();
 
-    speech.text= myText;
+    speech.text= textSpeech;
 
     speechSynthesis.speak(speech);
 }
