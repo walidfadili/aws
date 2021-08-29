@@ -32,8 +32,13 @@ var nbrPatternGauche=0;
 var nbrPatternDroite=0;
 var nbrPatternHaut=0;
 var nbrPatternBas=0;
-
+var check=0
 var severite=2;
+
+function arreter() {
+    Synthesis("Vous avez terminé votre session d'examen, votre enseignant recevra un rapport complet de votre session. Bon courage pour la suite et à très bientot")
+}
+
 class Alert extends React.Component {
   constructor(props) {
     super(props);
@@ -44,7 +49,10 @@ class Alert extends React.Component {
     };
   }
 
+  
+
   componentDidMount() {
+   // Synthesis("Bonjour et bienvenue dans votre session d'examen, je me présente, je suis Lina, votre nouvelle surveillante")
     axios.get('https://test-it-project.herokuapp.com/api/robots/api/robots'
     ).then((response)=>{
     DATA=response.data[0].patterns
@@ -55,6 +63,8 @@ class Alert extends React.Component {
     
   
   })
+  
+  
     
     this.interval = setInterval(() => {
       this.change()
@@ -66,6 +76,11 @@ class Alert extends React.Component {
     }, 500);
     
   }
+
+  stopExam() {
+    Synthesis("Vous avez arrêtez votre session d'examen, à la prochaine")
+  }
+
 
   change() {
     if (Math.max(gauche,droite,haut,bas,ecran)==ecran){
@@ -129,11 +144,15 @@ class Alert extends React.Component {
       
     }
     else if (detection == "pattern gauche"){
+      check++;
       symbolList=[];
       myText=detection
       if(nbrPatternGauche==severite-1){
         Synthesis("Nous avons detecté un "+myText)
         nbrPatternGauche=0
+      }
+      else if (check==3){
+        Synthesis("C'est la troisième fois que vous regardez à gauche monsieur")
       }
       else{
         nbrPatternGauche++
@@ -197,7 +216,7 @@ class Alert extends React.Component {
 
 function App() {
 
-  
+  //Synthesis("Bonjour et bienvenue dans votre session d'examen, je me présente, je suis Lina, votre nouvelle surveillante")
   var text=null;
   //Ref
   const webcamRef = useRef(null);
@@ -265,67 +284,67 @@ function App() {
   useEffect(()=>{runFacemesh()}, []);
 
 
-
   return (
     <div className="App">
-      <div id="entete">
-        Bonjour 
-      </div>
+    
 
-  <div id="main">
-  <div id="menu" style={{
-   marginBottom: 10
- }}>
- <Webcam
+<div id="main" style={{
+  marginLeft: 600
+}}>
+
+<Webcam
           ref={webcamRef}
           style={{
-            //position: "absolute",
-            marginLeft: 100,
-            marginTop: 10,
-            /*left: 0,
+           // position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 0,
             right: 0,
-            textAlign: "center",*/
+            textAlign: "center",
             zindex: 9,
-            width: 320,
-            height: 240,
+            width: 640,
+            height: 480,
           }}
         />
 
-   <canvas
-          ref={canvasRef}
-          style={{
-           /* width: 0,
-            height: 0,*/
-            position: "absolute",
-            marginLeft: 100,
-            marginTop: 10,
-            /*left: 0,
-            right: 0,
-            textAlign: "center",*/
-            zindex: 9,
-            width: 320,
-            height: 240,
-          }}
-        />
-    <Alert  id="alert"></Alert> 
- </div>
+ <canvas
+        ref={canvasRef}
+        style={{
+         /* width: 0,
+          height: 0,*/
+        //  position: "absolute",
+        marginLeft: "auto",
+        marginRight: "auto",
+          /*left: 0,
+          right: 0,
+          textAlign: "center",*/
+          zindex: 9,
+          width: 0,
+          height: 0,
+        }}
+      />
+      <div style={{
+        width: 640
+      }}><Alert  id="alert"></Alert> </div>
+      
+<button style={{
+  width: 640
+}} onClick={arreter}>
+  Arrêter
+</button>
+  
 
- <div id="contenu" style={{
-   textAlign: "center",
- }}>
-  Contenu de l'examen
- </div>
+
+
 </div>
 
-<div id="footer">
- Pied de Page
-</div>
-      
-      
-        
+
+    
+    
       
     
-    </div>
+  
+  </div>
   );
 }
 
