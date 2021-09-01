@@ -11,10 +11,8 @@ import { getGradient } from '@tensorflow/tfjs';
 import { Synthesis } from './speechSynthesis';
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
   Link,
-  useLocation
 } from "react-router-dom";
 
 function commencer(e) {    Synthesis("Bonjour et Bienvenue dans votre session d'examen, je suis Lina, votre surveillante. Je vous rappelle les règles : Il est strictement interdit de regarder en dehors de votre écran. Il est strictement interdit d'utiliser un quelconque support ou de communiquer avec d'autres personnes. Toute tentative de fraude sera enregistré et pénalisé. Cliquez sur Arreter pour terminer votre session. Bon courage")  }

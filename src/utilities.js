@@ -2665,59 +2665,6 @@ const detectRot = (keypoints)=> {
       ];
 }
 
-
-const getHeadAnglesCos = (keypoints) => {
-    // V: 10, 152; H: 226, 446
-    var faceVerticalCentralPoint = [
-    0,
-    (keypoints[10][1] + keypoints[152][1]) * 0.5,
-    (keypoints[10][2] + keypoints[152][2]) * 0.5,
-    ];
-    const verticalAdjacent =
-    keypoints[10][2] - faceVerticalCentralPoint[2];
-    const verticalOpposite =
-    keypoints[10][1] - faceVerticalCentralPoint[1];
-    const verticalHypotenuse = l2Norm([
-    verticalAdjacent,
-    verticalOpposite,
-    ]);
-    const verticalCos = verticalAdjacent / verticalHypotenuse;
-    
-    var faceHorizontalCentralPoint = [
-      (keypoints[226][0] + keypoints[446][0]) * 0.5,
-      0,
-      (keypoints[226][2] + keypoints[446][2]) * 0.5,
-    ];
-    const horizontalAdjacent =
-            keypoints[226][2] - faceHorizontalCentralPoint[2];
-    const horizontalOpposite =
-            keypoints[226][0] - faceHorizontalCentralPoint[0];
-    const horizontalHypotenuse = l2Norm([
-      horizontalAdjacent,
-      horizontalOpposite,
-    ]);
-    const horizontalCos = horizontalAdjacent / horizontalHypotenuse;
-    
-    return [
-      verticalCos,
-      horizontalCos,
-    ];
-    
-}
-
-const l2Norm = (vec)=> {
-    let norm = 0;
-    for (const v of vec) {
-    norm += v * v;
-    }
-    return Math.sqrt(norm);
-}
-
-
-
-
-
-
 // Triangle drawing method
 const drawPath = (ctx, points, closePath) => {
   const region = new Path2D();
@@ -2737,10 +2684,10 @@ const drawPath = (ctx, points, closePath) => {
 
 
 
-// Drawing Mesh
+// cette fonction retourne la direction detecté ( symbole )
 export const drawMesh = (predictions, ctx, params) => {
   var direction="écran"; 
-  var text="vous regardez l'écran";
+  //var text="vous regardez l'écran";
   if (predictions.length > 0) {
     predictions.forEach((prediction) => {
       const keypoints = prediction.scaledMesh;
@@ -2750,46 +2697,46 @@ export const drawMesh = (predictions, ctx, params) => {
       
       if(Math.abs(response[0])</*0.2*/params.gauche){
       //  console.log("tu regardes à gauche")
-        text= "vous regardez à gauche"
+        //text= "vous regardez à gauche"
         direction="gauche"
       }
       else if(Math.abs(response[1])</*0.2*/ params.droite){
       //  console.log("tu regardes à droite")
-        text= "vous regardez à droite"
+        //text= "vous regardez à droite"
         direction="droite"
       }
       else if(Math.abs(response[2])</*0.4*/ params.haut){
       //console.log("tu regardes en haut")
-        text= "vous regardez en haut"
+        //text= "vous regardez en haut"
         direction="haut"
       }
       else if(Math.abs(response[2])>/*0.6*/ params.bas){
       //console.log("tu regardes en bas")
-        text="vous regardez en bas"
+        //text="vous regardez en bas"
         direction="bas"
       }
      else if (Math.abs(response[3])</*0.4*/ params.pupilleGauche){
-        text= "vous regardez à gauche"
+        //text= "vous regardez à gauche"
         direction="gauche"
       }
       else if (Math.abs(response[3])>/*0.6*/params.pupilleDroite){
-        text= "vous regardez à droite"
+        //text= "vous regardez à droite"
         direction="droite"
       }
     else if (Math.abs(response[4])</*0.4*/params.pupilleBas){
-      text= "pas bon"
+      //text= "pas bon"
       direction="bas"
       //console.log("tu regardes à droite")
     }
     else if (Math.abs(response[4])>/*0.7*/params.pupilleHaut){
-      text= "pas bon du tout"
+      //text= "pas bon du tout"
       direction="haut"
       //console.log("tu regardes à droite")
     }
 
 
     else {
-      text= "vous regardez l\'écran"
+      //text= "vous regardez l\'écran"
       direction="écran"
     }
 
@@ -2823,12 +2770,13 @@ export const drawMesh = (predictions, ctx, params) => {
   }
 
   else {      
-      text= 'pas de visage détécté';
+      //text= 'pas de visage détécté';
       //console.log("pas de visage")
   }
   return direction
 };
 
+// cette fonction enfile un symbole à la file
 
 export const addSymbol=(symbolList,symbol)=>{
   if (symbolList.length<4) {
@@ -2840,25 +2788,25 @@ export const addSymbol=(symbolList,symbol)=>{
   }
 }
 
-export const Synthesis = (textSpeech) => {
-
-    let speech = new SpeechSynthesisUtterance();
-
-    speech.text= textSpeech;
-
-    speechSynthesis.speak(speech);
-}
-
+// cette fonction parcours la file pour voir si elle correspond à un pattern, retourne le symbole, retourne null sinon.
 export const patternDetection=(symbolList,DATA)=> {
   if (symbolList.length<4) {
     return null
   }
   for (var i = 0; i < DATA.length; i++) {
     if (JSON.stringify(DATA[i].pattern)==JSON.stringify(symbolList)) {
-      //Synthesis("nous avons detecté un pattern")
       return DATA[i].name
     }
   }
   return null
 }
 
+// fonction responsable de la synthèse vocale
+export const Synthesis = (textSpeech) => {
+
+  let speech = new SpeechSynthesisUtterance();
+
+  speech.text= textSpeech;
+
+  speechSynthesis.speak(speech);
+}
